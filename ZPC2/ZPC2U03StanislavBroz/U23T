@@ -1,0 +1,11 @@
+T()
+{ int B[100];
+  Vyber(A,DELKA,KLADNA,B);
+  Vypis(B);
+  printf("----------------------------------------\n");
+  Vyber(A,DELKA,NEZAPORNA,B);
+  Vypis(B);
+  printf("----------------------------------------\n");
+  Vyber(A,DELKA,ZAPORNA,B);
+  Vypis(B);
+  printf("----------------------------------------\n"); }

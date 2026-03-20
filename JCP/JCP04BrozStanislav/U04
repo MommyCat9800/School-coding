@@ -1,0 +1,17 @@
+
+void T()
+{ typedef Seznam S;
+
+  const char *J[]={"Jana","Petr","Eva","Irena","Alena","Pavel","Romana","Jitka"};
+  for (auto i:J) new S(i);
+
+  char h[]="Hana";
+  new S(h);
+  *h='?';
+
+  char d[]="Denisa";
+  new S(d);
+  *d='?';
+
+  if (S::prvni()) { do { cout << S::soucasny()->jm() << "  "; } while (!S::posledni()); }
+  cout << endl; }
