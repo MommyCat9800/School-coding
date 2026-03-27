@@ -13,32 +13,32 @@ void printName(int& currLineLen, int& maxLineLen, string currName) {
     else {
         cout << endl << currName << " ";
         currLineLen = currName.length() + 1;
-    };
+    }
 }
 
 int main() {
     int maxLineLen;
     string currName;
-    bool nameEnd = false;
+    bool nameStarted = false;
     int currLineLen = 0;
     int namesLen = Jmena.length();
     cin >> maxLineLen;
     for (int i = 0; i < namesLen; i++) {
         if ( Jmena[i] >= 'A' && Jmena[i] <= 'Z') {
-            if (!nameEnd) {
+            if (!nameStarted) {
                 currName.push_back( Jmena[i] );
             } else {
-                i
+                printName(currLineLen, maxLineLen, currName);
+                currName.clear();
+                currName.push_back( Jmena[i] );
             }
+            nameStarted = true;
 
-            nameEnd = true;
         } else if ( Jmena[i] >= 'a' && Jmena[i] <= 'z') {
-            currName.push_back( Jmena[i] );
-        }
-        else {
-            nameEnd = true;
+            currName.push_back( Jmena[i]);
         }
     }
+    printName(currLineLen, maxLineLen, currName);
 
     return 1;
 }
