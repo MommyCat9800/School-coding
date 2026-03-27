@@ -211,18 +211,18 @@ Tree* rotateL(Tree* root) {
 }
 
 void main() {
-    // vyska stromu
-
-    int arr[] = {9,7,11,6,10,8,12};
-    Tree* my_tree = arrToTree(arr,7);
-    print_tree(my_tree);
-    printf("vyska stromu: %d\n",tree_height(my_tree));
-    printf("podstrom elementu 11 a jeho vyska: %d\n", tree_height(search_tree(my_tree, 11)));
-    print_tree(search_tree(my_tree, 11));
-    printf("podstrom elementu 12 a jeho vyska: %d\n", tree_height(search_tree(my_tree, 12)));
-    print_tree(search_tree(my_tree, 12));
-    printf("podstrom elementu 12->right a jeho vyska: %d\n", tree_height(search_tree(my_tree, 12)->right));
-    print_tree(search_tree(my_tree, 12)->right);
+    // // vyska stromu
+    //
+    // int arr[] = {9,7,11,6,10,8,12};
+    // Tree* my_tree = arrToTree(arr,7);
+    // print_tree(my_tree);
+    // printf("vyska stromu: %d\n",tree_height(my_tree));
+    // printf("podstrom elementu 11 a jeho vyska: %d\n", tree_height(search_tree(my_tree, 11)));
+    // print_tree(search_tree(my_tree, 11));
+    // printf("podstrom elementu 12 a jeho vyska: %d\n", tree_height(search_tree(my_tree, 12)));
+    // print_tree(search_tree(my_tree, 12));
+    // printf("podstrom elementu 12->right a jeho vyska: %d\n", tree_height(search_tree(my_tree, 12)->right));
+    // print_tree(search_tree(my_tree, 12)->right);
 
 
     // // mazanie
