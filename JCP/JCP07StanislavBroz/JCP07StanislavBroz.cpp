@@ -48,7 +48,8 @@ class PFronta {
             }
             unsigned maxP = 0;
             for (unsigned i=0; i<count; i++) {
-                if (priority[i] > priority[maxP]) {
+                if (priority[maxP] < priority[i]) {
+                    // operator > nieje podla zadania pretazeny takze bolo nutno vymenit za operator <
                     maxP = i;
                 }
             }
