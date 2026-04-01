@@ -7,10 +7,10 @@ typedef  struct node {
     struct node* parent;
     struct node* right;
     struct node* left;
-} Tree;
+} BST;
 
-Tree* createTree(int const key, Tree* parent) {
-    Tree* new_node = (Tree*)malloc(sizeof(Tree));
+BST* createTree(int const key, BST* parent) {
+    BST* new_node = (BST*)malloc(sizeof(BST));
     new_node->key = key;
     new_node->parent = parent;
     new_node->left = NULL;
@@ -18,7 +18,7 @@ Tree* createTree(int const key, Tree* parent) {
     return new_node;
 }
 
-void add(Tree* root, int key) {
+void add(BST* root, int key) {
     if (key < root->key) {
         if (root->left == NULL) {
             root->left = createTree(key, root);
@@ -35,15 +35,15 @@ void add(Tree* root, int key) {
 }
 
 // ReSharper disable once CppParameterMayBeConst
-Tree* arrToTree(int arr[], int len) {
-    Tree* newTree = createTree(arr[0], NULL);
+BST* arrToTree(int arr[], int len) {
+    BST* newTree = createTree(arr[0], NULL);
     for (int i = 1; i < len; i++) {
         add(newTree, arr[i]);
     }
     return newTree;
 }
 
-Tree* search_tree(Tree* root,const int key) {
+BST* search_tree(BST* root,const int key) {
     if (root->key == key) {
         return root;
     }
@@ -62,20 +62,20 @@ Tree* search_tree(Tree* root,const int key) {
     }
 }
 
-void print_tree(Tree* root) {
+void print_tree(BST* root) {
     // ReSharper disable once CppDeclarationHidesLocal
     if (root == NULL) {
         printf("#\n");
         return;
     }
 
-    void print_tree_help(Tree* root,int depth,char prefix);
+    void print_tree_help(BST* root,int depth,char prefix);
 
     print_tree_help(root, 0, '>');
     printf("\n");
 }
 
-void print_tree_help(Tree* root, int depth,char prefix) {
+void print_tree_help(BST* root, int depth,char prefix) {
     if (root->right != NULL) {
         print_tree_help(root->right, depth+1,'/');
     }
@@ -88,7 +88,7 @@ void print_tree_help(Tree* root, int depth,char prefix) {
     }
 }
 
-int tree_height(Tree* root) {
+int tree_height(BST* root) {
     int left_height, right_height;
     if (root == NULL) {
         return -1;
@@ -103,7 +103,7 @@ int tree_height(Tree* root) {
     }
 }
 
-int tree_elem_count(Tree* root) {
+int tree_elem_count(BST* root) {
     if (root != NULL) {
         return tree_elem_count(root->left) + tree_elem_count(root->right) + 1;
     } else {
@@ -111,23 +111,23 @@ int tree_elem_count(Tree* root) {
     }
 }
 
-void in_order(const Tree* root, int arr[]) {
+void in_order(const BST* root, int arr[]) {
     arr = (int*)malloc(sizeof(int)*tree_elem_count(root));
-    void in_order_help(const Tree* root,int index, int arr[]);
+    void in_order_help(const BST* root,int index, int arr[]);
     int index = 0;
     in_order_help(root,index,arr);
 }
 
-void in_order_help(const Tree* root,int index,int arr[]) {
+void in_order_help(const BST* root,int index,int arr[]) {
     // TODO finish later
 }
 
-Tree* findMin(Tree* root) {
+BST* findMin(BST* root) {
     if (root->left == NULL) {return root;}
     else {return findMin(root->left);}
 }
 
-Tree* remNode(Tree* root, int key) {
+BST* remNode(BST* root, int key) {
     if (root == NULL) {return NULL;}
     if (key < root->key) {
         root->left = remNode(root->left, key);
@@ -135,29 +135,29 @@ Tree* remNode(Tree* root, int key) {
         root->right = remNode(root->right, key);
     } else {
         if (root->left == NULL) {
-            Tree* tempNode = root->right;
+            BST* tempNode = root->right;
             if (tempNode != NULL) {tempNode->parent = root->parent;}
             free(root);
             return tempNode;
         }
         if (root->right == NULL) {
-            Tree* tempNode = root->left;
+            BST* tempNode = root->left;
             if (tempNode != NULL) {tempNode->parent = root->parent;}
             free(root);
             return tempNode;
         }
 
-        Tree* successor = findMin(root->right);
+        BST* successor = findMin(root->right);
         root->key = successor->key;
         root->right = remNode(root->right, successor->key);
     }
     return root;
 }
 
-Tree* rotateR(Tree* root) {
+BST* rotateR(BST* root) {
     if (root == NULL || root->left == NULL) return root;
 
-    Tree* newRoot = root->left;
+    BST* newRoot = root->left;
     // zmena rodica
     newRoot->parent = root->parent;
     root->parent = newRoot;
@@ -182,10 +182,10 @@ Tree* rotateR(Tree* root) {
     return newRoot;
 }
 
-Tree* rotateL(Tree* root) {
+BST* rotateL(BST* root) {
     if (root == NULL || root->right == NULL) return root;
 
-    Tree* newRoot = root->right;
+    BST* newRoot = root->right;
     // zmena rodica
     newRoot->parent = root->parent;
     root->parent = newRoot;
