@@ -9,6 +9,12 @@ int jePrestupny(const unsigned rok) {
     return (rok % 4 == 0 && (rok % 100 != 0 || rok % 400 == 0));
 }
 
+int isin(const char string[], const char *arr[]) {
+    for (int i = 0; i < 24; i++) {
+        if (!strcmp(string, arr[i])) return True;
+    } return False;
+}
+
 int main(void) {
     FILE* dates = fopen("Datum.txt", "r");
     char err[2][22] = {"chybny den nebo mesic","neni prestupny rok"};
@@ -38,6 +44,12 @@ int main(void) {
             }
             else if ((d == 29 && m == 2) && !jePrestupny(r)) {
                 printf("%d. %d. %d %s\n",d,m,r,err[1]);
+            }
+        } else {
+            if (!isin(mmm, mesice)) {
+                printf("%d. %s %d %s\n",d,mmm,r,err[0]);
+            } else if ((!strcmp(mmm, "unor") || !strcmp(mmm, "unora")) && d == 29 && !jePrestupny(r)) {
+                printf("%d. %s %d %s\n",d,mmm,r,err[1]);
             }
         }
 
