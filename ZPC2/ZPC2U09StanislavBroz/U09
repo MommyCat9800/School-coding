@@ -1,0 +1,9 @@
+
+const unsigned dny[]=
+{31,29,31,30,31,30,31,31,30,31,30,31};
+
+const char *mesice[]=
+{"leden","ledna", "unor","unora", "brezen","brezna",
+ "duben","dubna", "kveten","kvetna", "cerven","cervna",
+ "cervenec","cervence", "srpen","srpna", "zari","zari",
+ "rijen","rijna", "listopad","listopadu", "prosinec","prosince"};
