@@ -20,6 +20,19 @@ AVL_tree* avl_create() {
     return new_tree;
 }
 
+
+
+AVL_node* avl_create_node(int key, AVL_node* parent) {
+    AVL_node* new_node = malloc(sizeof(AVL_node));
+    new_node->key = key;
+    new_node->height = 0;
+
+    new_node->parent = parent;
+    new_node->right = NULL;
+    new_node->left = NULL;
+    return new_node;
+}
+
 int max(int a, int b) {
     if (a > b) {
         return a;
@@ -35,18 +48,78 @@ int height(AVL_node* node) {
     }
 }
 
-AVL_node* avl_create_node(int key, AVL_node* parent) {
-    AVL_node* new_node = malloc(sizeof(AVL_node));
-    new_node->key = key;
-    new_node->height = 0;
+void updateHeight(AVL_node* node) {
+    node->height = 1 + max(height(node->right), height(node->left));
+}
 
-    new_node->parent = parent;
-    new_node->right = NULL;
-    new_node->left = NULL;
-    return new_node;
+enum Direction { LEFT, RIGHT };
+
+AVL_node* rotate(AVL_node* root, enum Direction dir) {
+    if (root == NULL) return NULL;
+    AVL_node* child = NULL;
+
+    // urcenie hlavneho potomka podla smeru rotacie
+    if (dir == RIGHT) {
+        child = root->left;
+    } else {
+        child = root->right;
+    }
+
+    // ak potomok neexistuje tak nieje mozna rotacia
+    if (child == NULL) return root;
+
+    // vymena potomka s rodicom
+    child->parent = root->parent;
+    if (root->parent != NULL) {
+        if (root->parent->left == root) {
+            root->parent->left = child;
+        } else {
+            root->parent->right = child;
+        }
+    }
+
+    // rotacia
+    if (dir == RIGHT) {
+        // Pravá rotácia (ťaháme uzol doprava)
+        root->left = child->right;
+        if (child->right != NULL) {
+            child->right->parent = root;
+        }
+        child->right = root;
+    } else {
+        // Ľavá rotácia (ťaháme uzol doľava)
+        root->right = child->left;
+        if (child->left != NULL) {
+            child->left->parent = root;
+        }
+        child->left = root;
+    }
+
+    // nastavenie noveho rodica povodnemu rootu
+    root->parent = child;
+
+    // aktualizovanie vysky stromu
+    updateHeight(root);
+    updateHeight(child);
+
+    // hladanie noveho korena stromu
+    AVL_node* temp = child;
+    while (temp->parent != NULL) {
+        temp = temp->parent;
+    }
+    return temp;
+}
+
+AVL_node* rotateR(AVL_node* root) {
+    return rotate(root, RIGHT);
+}
+
+AVL_node* rotateL(AVL_node* root) {
+   return rotate(root,LEFT);
 }
 
 int avl_add_node(AVL_node* node, int key) {
+    // pridanie prvku
     int success;
     if (key < node->key) {
         if (node->left == NULL) {
@@ -65,8 +138,15 @@ int avl_add_node(AVL_node* node, int key) {
     } else {
         success = 0;
     }
-    node->height = 1 + max(height(node->right), height(node->left));
 
+    // uprava vysky
+    updateHeight(node);
+
+    // balancing
+    int balance = height(node->left) - height(node->right);
+    if (balance > 1) {
+
+    }
     return success;
 }
 
@@ -76,13 +156,39 @@ int avl_add(AVL_tree* tree, int key) {
         return 1;
     }
     return avl_add_node(tree->root, key);
-
 }
 
 
 
 
+void print_tree(AVL_tree* root) {
+    if (root == NULL) {
+        printf("#\n");
+        return;
+    }
+    AVL_node* node = root->root;
+    void print_tree_help(AVL_node* root,int depth,char prefix);
 
+    print_tree_help(node, 0, '>');
+    printf("\n");
+}
+
+void print_tree_help(AVL_node* node, int depth,char prefix) {
+    if (node->right != NULL) {
+        print_tree_help(node->right, depth+1,'/');
+    }
+    for (int i = 0; i < depth; i++) {
+        printf("    ");
+    }
+    printf("%c%d h:%d\n",prefix, node->key,node->height);
+    if (node->left != NULL) {
+        print_tree_help(node->left, depth+1, '\\');
+    }
+}
+
+void main() {
+
+}
 
 // old
 
@@ -149,31 +255,7 @@ int avl_add(AVL_tree* tree, int key) {
 //     }
 // }
 //
-// void print_tree(BST* root) {
-//     // ReSharper disable once CppDeclarationHidesLocal
-//     if (root == NULL) {
-//         printf("#\n");
-//         return;
-//     }
-//
-//     void print_tree_help(BST* root,int depth,char prefix);
-//
-//     print_tree_help(root, 0, '>');
-//     printf("\n");
-// }
-//
-// void print_tree_help(BST* root, int depth,char prefix) {
-//     if (root->right != NULL) {
-//         print_tree_help(root->right, depth+1,'/');
-//     }
-//     for (int i = 0; i < depth; i++) {
-//         printf("    ");
-//     }
-//     printf("%c%d\n",prefix, root->key);
-//     if (root->left != NULL) {
-//         print_tree_help(root->left, depth+1, '\\');
-//     }
-// }
+
 //
 // int tree_height(BST* root) {
 //     int left_height, right_height;
@@ -241,99 +323,5 @@ int avl_add(AVL_tree* tree, int key) {
 //     return root;
 // }
 //
-// BST* rotateR(BST* root) {
-//     if (root == NULL || root->left == NULL) return root;
-//
-//     BST* newRoot = root->left;
-//     // zmena rodica
-//     newRoot->parent = root->parent;
-//     root->parent = newRoot;
-//     // zmena naslednika u rodica
-//     if (newRoot->parent != NULL) {
-//         if (newRoot->parent->left == root) {
-//             newRoot->parent->left = newRoot;
-//         } else {
-//             newRoot->parent->right = newRoot;
-//         }
-//     }
-//     //  vymena podstromu B
-//     root->left = newRoot->right;
-//     if (root->left != NULL) {
-//         root->left->parent = root;
-//     }
-//     newRoot->right = root;
-//
-//     while (newRoot->parent != NULL) {
-//         newRoot = newRoot->parent;
-//     }
-//     return newRoot;
-// }
-//
-// BST* rotateL(BST* root) {
-//     if (root == NULL || root->right == NULL) return root;
-//
-//     BST* newRoot = root->right;
-//     // zmena rodica
-//     newRoot->parent = root->parent;
-//     root->parent = newRoot;
-//     // zmena naslednika u rodica
-//     if (newRoot->parent != NULL) {
-//         if (newRoot->parent->right == root) {
-//             newRoot->parent->right = newRoot;
-//         } else {
-//             newRoot->parent->left = newRoot;
-//         }
-//     }
-//     //  vymena podstromu B
-//     root->right = newRoot->left;
-//     if (root->right != NULL) {
-//         root->right->parent = root;
-//     }
-//     newRoot->left = root;
-//
-//     while (newRoot->parent != NULL) {
-//         newRoot = newRoot->parent;
-//     }
-//     return newRoot;
-// }
 
-void main() {
-    // // vyska stromu
-    //
-    // int arr[] = {9,7,11,6,10,8,12};
-    // Tree* my_tree = arrToTree(arr,7);
-    // print_tree(my_tree);
-    // printf("vyska stromu: %d\n",tree_height(my_tree));
-    // printf("podstrom elementu 11 a jeho vyska: %d\n", tree_height(search_tree(my_tree, 11)));
-    // print_tree(search_tree(my_tree, 11));
-    // printf("podstrom elementu 12 a jeho vyska: %d\n", tree_height(search_tree(my_tree, 12)));
-    // print_tree(search_tree(my_tree, 12));
-    // printf("podstrom elementu 12->right a jeho vyska: %d\n", tree_height(search_tree(my_tree, 12)->right));
-    // print_tree(search_tree(my_tree, 12)->right);
-
-
-    // // mazanie
-    //
-    // int arr[] = {9,7,11,6,10,8,12};
-    // Tree* my_tree = arrToTree(arr ,7);
-    // printf("Vypis stromu: \n");
-    // print_tree(my_tree);
-    //
-    // printf("Vymaz zo stromu 11:\n");
-    // remNode(my_tree, 11);
-    // print_tree(my_tree);
-
-    // // Rotacie
-    //
-    // int arr[] = {4,2,6,3,5,1,7,8};
-    // Tree* newTree = arrToTree(arr, 8);
-    // printf("Vypis stromu: \n");
-    // print_tree(newTree);
-    // printf("Rotovany strom R:\n");
-    // newTree = rotateR(search_tree(newTree,4));
-    // print_tree(newTree);
-    // printf("Rotovany strom L:\n");
-    // newTree = rotateL(search_tree(newTree,2));
-    // print_tree(newTree);
-}
 
