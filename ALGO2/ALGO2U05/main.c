@@ -27,11 +27,12 @@ int max(int a, int b) {
     return b;
 }
 
-void updateHeight(AVL_node* node) {
-    if (node->left == NULL && node->right != NULL) node->height = 1 + node->right->height;
-    else if (node->right == NULL && node->left != NULL) node->height = 1 + node->left->height;
-    else if (node->right == NULL && node->left == NULL) node->height = 0;
-    else node->height = 1 + max(node->right->height, node->left->height);
+int height(AVL_node* node) {
+    if (node == NULL) {
+        return -1;
+    } else {
+        return node->height;
+    }
 }
 
 AVL_node* avl_create_node(int key, AVL_node* parent) {
@@ -64,7 +65,7 @@ int avl_add_node(AVL_node* node, int key) {
     } else {
         success = 0;
     }
-    updateHeight(node);
+    node->height = 1 + max(height(node->right), height(node->left));
 
     return success;
 }
