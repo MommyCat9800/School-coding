@@ -129,7 +129,7 @@ void updateRoot(AVL_tree* tree) {
     tree->root = node;
 }
 
-//
+// ziskanie balance factoru
 int getBalance(AVL_node* node) {
     return height(node->left) - height(node->right);
 }
@@ -212,8 +212,30 @@ void print_tree_help(AVL_node* node, int depth,char prefix) {
     }
 }
 
-void main() {
+// A TERAZ..... NASTAVA KAMEN URAZU.... avl_height()
+// jk get shit on Simon :DD
+int avl_height(AVL_tree* tree) {
+    if (tree == NULL) {
+        return -1;
+    }
+    return tree->root->height;
+}
 
+void main() {
+    AVL_tree* testTree = avl_create();
+    avl_add(testTree,1);
+    avl_add(testTree,2);
+    avl_add(testTree,3);
+    avl_add(testTree,4);
+    avl_add(testTree,5);
+    avl_add(testTree,6);
+    avl_add(testTree,7);
+    avl_add(testTree,8);
+    avl_add(testTree,9);
+    avl_add(testTree,10);
+;
+    print_tree(testTree);
+;
 }
 
 // old
