@@ -2,25 +2,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef  struct node {
+
+// definicie stromovych struktur
+// AVL
+typedef  struct AVL_node {
     int key;
     int height;
-    struct node* parent;
-    struct node* right;
-    struct node* left;
+    struct AVL_node* parent;
+    struct AVL_node* right;
+    struct AVL_node* left;
 } AVL_node;
 
 typedef struct AVL_tree {
     AVL_node* root;
 } AVL_tree;
 
+
+
+// vytvorenie stromu
 AVL_tree* avl_create() {
     AVL_tree* new_tree = malloc(sizeof(AVL_tree));
     new_tree->root = NULL;
     return new_tree;
 }
-
-
 
 AVL_node* avl_create_node(int key, AVL_node* parent) {
     AVL_node* new_node = malloc(sizeof(AVL_node));
@@ -33,6 +37,8 @@ AVL_node* avl_create_node(int key, AVL_node* parent) {
     return new_node;
 }
 
+
+// funkcie pre pracu s vyskou
 int max(int a, int b) {
     if (a > b) {
         return a;
@@ -52,6 +58,7 @@ void updateHeight(AVL_node* node) {
     node->height = 1 + max(height(node->right), height(node->left));
 }
 
+// univerzalna funkcia na rotacie a abstrakcie rotateR a rotateL
 enum Direction { LEFT, RIGHT };
 
 AVL_node* rotate(AVL_node* root, enum Direction dir) {
@@ -102,12 +109,7 @@ AVL_node* rotate(AVL_node* root, enum Direction dir) {
     updateHeight(root);
     updateHeight(child);
 
-    // hladanie noveho korena stromu
-    AVL_node* temp = child;
-    while (temp->parent != NULL) {
-        temp = temp->parent;
-    }
-    return temp;
+
 }
 
 AVL_node* rotateR(AVL_node* root) {
@@ -118,7 +120,33 @@ AVL_node* rotateL(AVL_node* root) {
    return rotate(root,LEFT);
 }
 
-int avl_add_node(AVL_node* node, int key) {
+// aktualizacia root prvku
+void updateRoot(AVL_tree* tree) {
+    AVL_node* node = tree->root;
+    while (node->parent != NULL) {
+        node = node->parent;
+    }
+    tree->root = node;
+}
+
+//
+int getBalance(AVL_node* node) {
+    return height(node->left) - height(node->right);
+}
+// pridavanie do AVL stromu
+int avl_add(AVL_tree* tree, int key) {
+    if (tree->root == NULL) {
+        tree->root = avl_create_node(key,NULL);
+        return 1;
+    }
+    AVL_node* root = tree->root;
+    int avl_add_node(AVL_node* node,const int key);
+    int success = avl_add_node(root, key);
+    updateRoot(tree);
+    return success;
+}
+
+int avl_add_node(AVL_node* node,const int key) {
     // pridanie prvku
     int success;
     if (key < node->key) {
@@ -143,22 +171,20 @@ int avl_add_node(AVL_node* node, int key) {
     updateHeight(node);
 
     // balancing
-    int balance = height(node->left) - height(node->right);
+    int balance = getBalance(node);
     if (balance > 1) {
-
+        if (getBalance(node->left) < 0) {
+            rotateL(node->left);
+        }
+        rotateR(node);
+    } if (balance < -1) {
+        if (getBalance(node->right) > 0) {
+            rotateR(node->right);
+        }
+        rotateL(node);
     }
     return success;
 }
-
-int avl_add(AVL_tree* tree, int key) {
-    if (tree->root == NULL) {
-        tree->root = avl_create_node(key,NULL);
-        return 1;
-    }
-    return avl_add_node(tree->root, key);
-}
-
-
 
 
 void print_tree(AVL_tree* root) {
