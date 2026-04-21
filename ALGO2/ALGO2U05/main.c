@@ -251,6 +251,7 @@ void avl_print_tree_help(AVL_node* node, int depth,char prefix) {
 }
 
 void avl_print_tree(AVL_tree* root) {
+    printf("\n");
     if (root == NULL) {
         printf("#\n");
         return;
@@ -502,34 +503,32 @@ int bst_search(BST_tree* tree, int key) {
 
 
 
+// funkcia na porovnanie
+void compare(FILE* file) {
+    BST_tree* bst = bst_create();
+    AVL_tree* avl = avl_create();
 
+    int count = 0;
+    int key;
+    fscanf(file,"%d",&count);
+    for (int i = 0; i < count; i++) {
+        fscanf(file,"%d",&key);
+        bst_add(bst,key);
+        avl_add(avl,key);
+    }
+    int BST_height = bst_height(bst);
+    int AVL_height = avl_height(avl);
+
+    // printf("BST vyska: %d\nAVL vyska: %d",BST_height,AVL_height);
+    printf("%d %d",BST_height,AVL_height);
+
+    // avl_print_tree(avl);
+}
 
 
 void main() {
-    AVL_tree* testTree = avl_create();
-    avl_add(testTree,1);
-    avl_add(testTree,2);
-    avl_add(testTree,3);
-    avl_add(testTree,4);
-    avl_add(testTree,5);
-    avl_add(testTree,6);
-    avl_add(testTree,7);
-    avl_add(testTree,8);
-    avl_add(testTree,9);
-    avl_add(testTree,10);
-    avl_add(testTree,11);
-    avl_add(testTree,12);
-    avl_add(testTree,13);
-    avl_add(testTree,14);
-    avl_add(testTree,15);
-    avl_add(testTree,16);
-    avl_add(testTree,17);
-    avl_add(testTree,18);
-    avl_add(testTree,19);
-    avl_add(testTree,20);
-
-    avl_print_tree(testTree);
-
-    printf("vyska stromu: %d\n",avl_height(testTree));
+    FILE* file = fopen("vlozit.txt", "r");
+    compare(file);
+    fclose(file);
 }
 
