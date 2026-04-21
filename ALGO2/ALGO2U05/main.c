@@ -228,7 +228,7 @@ int avl_search_node(AVL_node* root,const int key) {
     }
 }
 
-int bst_search(AVL_tree* tree, int key) {
+int avl_search(AVL_tree* tree, int key) {
     if (tree->root == NULL) {
         return 0;
     }
