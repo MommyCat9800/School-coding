@@ -5,9 +5,13 @@
 #define true 1
 typedef char bool;
 
-// Prototypy funkcí
-int Najit(int cislo);
-bool Pridat(int cislo);
-bool Odebrat(int cislo);
+int Najit(int elem);
+bool Pridat(int elem);
+bool Odebrat(int elem);
+
+
+extern int *pole;
+extern int kapacita;
+extern int pocet;
 
 #endif
